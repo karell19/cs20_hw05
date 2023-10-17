@@ -18,15 +18,19 @@
 
             function build_grid()
             {
-                let grid = [];
-                let counter = 0;
-                for (let row = 0; row < 3; row++) {
-                    grid[row] = [];
-                    for (let col = 0; col < 3; col++) {
-                        grid[row][col] = '&nbsp;';
-                        document.getElementById(counter).innerHTML = grid[row][col];
-                        counter++;
+                var grid = document.createElement("table");
+                grid.className = "grid";
+                for (var row = 0; row < 3; row++) {
+                    var grid_row = document.createElement("tr");
+                    for (var col = 0; col < 3; col++) {
+                        var button_wrapper = document.createElement('td');
+                        var button = document.createElement('button');
+                        button.innerHTML = '&nbsp;';
+                        button_wrapper.appendChild(button);
+                        grid_row.appendChild(button_wrapper);
                     }
+                    grid.appendChild(grid_row);
+                    document.body.appendChild(grid);
                 }
             }
 
@@ -65,7 +69,7 @@
                 <p></p>
             </div>
             <div class="grid">
-                <table>
+                <!-- <table>
                     <tr>
                         <td><button id="0" onClick="selected(this.id, turn)"></button></td>
                         <td><button id="1" onClick="selected(this.id, turn)"></button></td>
@@ -81,7 +85,7 @@
                         <td><button id="7"></button></td>
                         <td><button id="8"></button></td>
                     </tr>
-                </table>
+                </table> -->
             </div>
             <div class="new_game">
                 <input type="button" onClick="start_game()" value="New Game">
