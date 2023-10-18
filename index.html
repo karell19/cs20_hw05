@@ -8,15 +8,17 @@
         <link rel="stylesheet" type="text/css" href="style.css">
         <script type="text/javascript">
             var turn = document.getElementById("player1");
-
             var turns_taken = 0;
             var reset = 0;
             var done = "";
 
+            // Initializing grid of 9 values.
             var grid_vals = [];
             for (var i = 0; i < 9; i++) {
                 grid_vals[i] = " ";
             }
+
+            // Viable solutions to Tic-Tac-Toe.
             var grid_solutions = [
                 [0, 1, 2],
                 [3, 4, 5],
@@ -28,18 +30,30 @@
                 [2, 4, 6],
             ];
         
+            /*
+             * enter_name()
+             * Purpose:     Prompt players to enter their names.
+             * Effects:     Displayed across program length to indicate whose
+             *              turn it is.
+             */
             function enter_name() 
             {
                 var p1 = prompt("Player 1 Name:", "Player 1");
                 var p2 = prompt("Player 2 Name:", "Player 2");
 
+                // Prompt for input of names.
                 document.getElementById("player1").innerHTML = p1 + " (X)";
                 document.getElementById("vs").innerHTML = "vs.";
                 document.getElementById("player2").innerHTML = p2 + " (O)";
             }
 
+            /*
+             * build_grid()
+             * Purpose:     Initialize 9 buttons.
+             */
             function build_grid()
             {
+                // Loop initializing buttons with initial, '&nbsp;' value.
                 for (var i = 0; i < 9; i++) {
                     var button = document.createElement("div");
                     button.innerHTML += "<button>&nbsp;</button>";
@@ -49,10 +63,19 @@
                 }
             }
 
+            /*
+             * chosen_button()
+             * Purpose:     Display 'X'/'O' value at a button according to
+             *              the player who selected the button.
+             * Effects:     When invoked, the button's value is changed
+             *              according to the player whose turn it is.
+             */ 
             function chosen_button()
             {
+                // Limits number of turns that can be made.
                 if (turns_taken < 9) {
                     let val = '';
+                    // Changes turns between players.
                     if (turn == document.getElementById("player1")) {
                         val = 'X';
                         turn = document.getElementById("player2");
@@ -61,9 +84,12 @@
                         turn = document.getElementById("player1");
                     }
 
+                    // Displays current turn.
                     document.getElementById("curr_turn").innerHTML = "Current Turn: " + turn.innerHTML;
 
+                    // Disables button from future selections.
                     this.innerHTML = "<button disabled>" + val + "</button>";
+
                     grid_vals[this.id] = val;
                     turns_taken++;
                     console.log(turns_taken);
@@ -72,15 +98,24 @@
                 }
             }
 
+            /*
+             * check_winner()
+             * Purpose:     Check whether a player has won tic-tac-toe.
+             */
             function check_winner()
             {
                 var winner_found = 'N';
 
+                // Loop that checks for winning selections.
                 for (var i = 0; i < grid_solutions.length; i++) {
                     coordinate_values = [];
+
+                    // Loop that collects values in a winning arrangement. 
                     for (var coordinate = 0; coordinate < grid_solutions[i].length; coordinate++) {
                         coordinate_values[coordinate] = grid_vals[grid_solutions[i][coordinate]];
                     }
+
+                    // Checks if collected values are winning selections.
                     if (coordinate_values.join("").includes("XXX")) {
                         winner_found = 'X';
                         break;
@@ -93,8 +128,16 @@
                 evaluate_outcome(winner_found);
             }
 
+            /*
+             * evaluate_outcome()
+             * Purpose:     Evaluate which player won, or if a tie occurred.
+             * Arguments:   winner-found. Value corresponding to the player
+             *              who won tic-tac-toe, or corresponding to the case
+             *              where a tie has occurred.
+             */
             function evaluate_outcome(winner_found)
             {
+                // Conditional that announces outcome of game.
                 if (turns_taken == 9 && winner_found == 'N') {
                     document.getElementById("winner").innerHTML = "TIE!";
                     done = "Y";
@@ -106,11 +149,19 @@
                     done = "Y";
                 }
 
+                // Ensures no more turns can be made.
                 if (done == "Y") {
                     turns_taken = 9;
                 }   
             }
 
+            /*
+             * start_game()
+             * Purpose:     Initializes the tic-tac-toe structure, namely the 
+             *              necessary 3x3 grid and sets player names.
+             * Effects:     When invoked after the first game, will reload
+             *              the web-page.
+             */
             function start_game()
             {
                 if (done == "Y" || reset == 1) {
