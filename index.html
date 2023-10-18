@@ -10,6 +10,7 @@
             var turn = document.getElementById("player1");
 
             var turns_taken = 0;
+            var reset = 0;
             var done = "";
 
             var grid_vals = [];
@@ -96,6 +97,7 @@
             {
                 if (turns_taken == 9 && winner_found == 'N') {
                     document.getElementById("winner").innerHTML = "TIE!";
+                    done = "Y";
                 } else if (winner_found == 'X') {
                     document.getElementById("winner").innerHTML = document.getElementById("player1").innerHTML + " IS THE WINNER!";
                     done = "Y";
@@ -111,12 +113,14 @@
 
             function start_game()
             {
-                if (done == "Y") {
+                if (done == "Y" || reset == 1) {
                     done = "";
+                    reset = 0;
                     location.reload();
                 } else {
                     enter_name();
                     build_grid();
+                    reset++;
                 }
             }
         </script>
@@ -124,22 +128,21 @@
     <body>
         <div class="wrapper">
             <div class="header">
-                <p >Tic-Tac-Toe!</p>
-                <table>
+                <p style="font-size: 30px; font-weight: bold">Tic-Tac-Toe!</p>
+                <table class="names">
                     <tr>
-                        <td><p id="player1"></p></td>
-                        <td><p id="vs"></p></td>
-                        <td><p id="player2"></p></td>
+                        <td><p id="player1" style="text-align: center"></p></td>
+                        <td><p id="vs" style="text-align: center"></p></td>
+                        <td><p id="player2" style="text-align: center"></p></td>
                     </tr>
                 </table>
-                <p id="curr_turn"></p>
+                <p id="curr_turn">Current Turn: Player 2 (O)</p>
             </div>
             <div id="grid_div" class="grid"></div>
-            <div><p id="winner"></p></div>
+            <div><p id="winner" style="text-align: center"></p></div>
             <div class="new_game">
                 <input type="button" onClick="start_game()" value="New Game">
             </div>
         </div>
     </body>
-    <!-- // array of items needed, search for solution in the array (aka string) -->
 </html>
