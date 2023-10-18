@@ -5,7 +5,12 @@ body {
 .header {
     text-align: center;
 }
-
-@media screen and (max-width: 600px) {
-
+.grid {
+    display: grid;
+    gap: 1px;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: space-evenly;
+}
+.grid div {
+    padding: 10px;
 }

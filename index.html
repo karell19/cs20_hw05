@@ -7,51 +7,117 @@
         <meta name="description" content="A classic game of Tic-Tac-Toe.">
         <link rel="stylesheet" type="text/css" href="style.css">
         <script type="text/javascript">
+            var turn = document.getElementById("player1");
+
+            var turns_taken = 0;
+            var done = "";
+
+            var grid_vals = [];
+            for (var i = 0; i < 9; i++) {
+                grid_vals[i] = " ";
+            }
+            var grid_solutions = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+        
             function enter_name() 
             {
                 var p1 = prompt("Player 1 Name:", "Player 1");
                 var p2 = prompt("Player 2 Name:", "Player 2");
 
                 document.getElementById("player1").innerHTML = p1 + " (X)";
-                document.getElementById("player2").innerHTML = p2 + " (0)";
+                document.getElementById("vs").innerHTML = "vs.";
+                document.getElementById("player2").innerHTML = p2 + " (O)";
             }
 
             function build_grid()
             {
-                var grid = document.createElement("table");
-                grid.className = "grid";
-                for (var row = 0; row < 3; row++) {
-                    var grid_row = document.createElement("tr");
-                    for (var col = 0; col < 3; col++) {
-                        var button_wrapper = document.createElement('td');
-                        var button = document.createElement('button');
-                        button.innerHTML = '&nbsp;';
-                        button_wrapper.appendChild(button);
-                        grid_row.appendChild(button_wrapper);
-                    }
-                    grid.appendChild(grid_row);
-                    document.body.appendChild(grid);
+                for (var i = 0; i < 9; i++) {
+                    var button = document.createElement("div");
+                    button.innerHTML += "<button>&nbsp;</button>";
+                    button.id = i;
+                    button.onclick = chosen_button;
+                    document.getElementById("grid_div").appendChild(button);
                 }
             }
 
-            function selected(id, turn)
+            function chosen_button()
             {
-                let val = '';
-                if (turn == 0) {
-                    val = 'X';
-                    turn = 1;
-                } else if (turn == 1) {
-                    val = '0'
-                    turn = 0;
+                if (turns_taken < 9) {
+                    let val = '';
+                    if (turn == document.getElementById("player1")) {
+                        val = 'X';
+                        turn = document.getElementById("player2");
+                    } else {
+                        val = 'O';
+                        turn = document.getElementById("player1");
+                    }
+
+                    document.getElementById("curr_turn").innerHTML = "Current Turn: " + turn.innerHTML;
+
+                    this.innerHTML = "<button disabled>" + val + "</button>";
+                    grid_vals[this.id] = val;
+                    turns_taken++;
+                    console.log(turns_taken);
+
+                    check_winner();
+                }
+            }
+
+            function check_winner()
+            {
+                var winner_found = 'N';
+
+                for (var i = 0; i < grid_solutions.length; i++) {
+                    coordinate_values = [];
+                    for (var coordinate = 0; coordinate < grid_solutions[i].length; coordinate++) {
+                        coordinate_values[coordinate] = grid_vals[grid_solutions[i][coordinate]];
+                    }
+                    if (coordinate_values.join("").includes("XXX")) {
+                        winner_found = 'X';
+                        break;
+                    } else if (coordinate_values.join("").includes("OOO")) {
+                        winner_found = 'O';
+                        break;
+                    }
+                }
+        
+                evaluate_outcome(winner_found);
+            }
+
+            function evaluate_outcome(winner_found)
+            {
+                if (turns_taken == 9 && winner_found == 'N') {
+                    document.getElementById("winner").innerHTML = "TIE!";
+                } else if (winner_found == 'X') {
+                    document.getElementById("winner").innerHTML = document.getElementById("player1").innerHTML + " IS THE WINNER!";
+                    done = "Y";
+                } else if (winner_found == 'O') {
+                    document.getElementById("winner").innerHTML = document.getElementById("player2").innerHTML + " IS THE WINNER!";
+                    done = "Y";
                 }
 
-                document.getElementById(id).innerHTML = val;
+                if (done == "Y") {
+                    turns_taken = 9;
+                }   
             }
 
             function start_game()
             {
-                enter_name();
-                build_grid();
+                if (done == "Y") {
+                    done = "";
+                    location.reload();
+                } else {
+                    enter_name();
+                    build_grid();
+                }
             }
         </script>
     </head>
@@ -62,34 +128,18 @@
                 <table>
                     <tr>
                         <td><p id="player1"></p></td>
-                        <td><p>vs.</p></td>
+                        <td><p id="vs"></p></td>
                         <td><p id="player2"></p></td>
                     </tr>
                 </table>
-                <p></p>
+                <p id="curr_turn"></p>
             </div>
-            <div class="grid">
-                <!-- <table>
-                    <tr>
-                        <td><button id="0" onClick="selected(this.id, turn)"></button></td>
-                        <td><button id="1" onClick="selected(this.id, turn)"></button></td>
-                        <td><button id="2" onClick="selected(this.id, turn)"></button></td>
-                    </tr>
-                    <tr>
-                        <td><button id="3"></button></td>
-                        <td><button id="4"></button></td>
-                        <td><button id="5"></button></td>
-                    </tr>
-                    <tr>
-                        <td><button id="6"></button></td>
-                        <td><button id="7"></button></td>
-                        <td><button id="8"></button></td>
-                    </tr>
-                </table> -->
-            </div>
+            <div id="grid_div" class="grid"></div>
+            <div><p id="winner"></p></div>
             <div class="new_game">
                 <input type="button" onClick="start_game()" value="New Game">
             </div>
         </div>
     </body>
+    <!-- // array of items needed, search for solution in the array (aka string) -->
 </html>
